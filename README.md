@@ -1,1 +1,2 @@
-# Love_Story
+- Fix sound icon -> tap sound icon to mute.
+- Ước tính văn bản đầy đủ hiển thị từ trước và cho chữ chạy ra theo đó và sẽ không chỉnh lại văn bản theo chữ xuất hiện kế tiếp.
