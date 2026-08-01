@@ -1,0 +1,742 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#FBF4EB" />
+  <title>Lời mời nho nhỏ ✿</title>
+  <style>
+    :root {
+      --cream: #FBF4EB;
+      --blush: #FBD9E5;
+      --text: #C43670;
+      --rose-light: #FCE8F0;
+      --rose-mid: #F4BDD0;
+      --rose-soft: #F8D7E3;
+      --rose-deep: #C43670;
+      --shadow: rgba(217, 137, 168, .18);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { min-height: 100%; }
+
+    body {
+      margin: 0;
+      overflow-x: hidden;
+      background: var(--cream);
+      color: var(--text);
+      font-family: Arial, "Segoe UI", Tahoma, sans-serif;
+      letter-spacing: .025em;
+    }
+
+    button, input { font: inherit; }
+
+    button {
+      cursor: pointer;
+      border: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .ambient {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: -1;
+    }
+
+    .ambient::before, .ambient::after {
+      content: "";
+      position: absolute;
+      width: 48vmax;
+      aspect-ratio: 1;
+      border: 1px solid var(--rose-light);
+      border-radius: 48% 52% 61% 39% / 45% 42% 58% 55%;
+      opacity: .8;
+    }
+
+    .ambient::before { top: -24vmax; left: -20vmax; }
+    .ambient::after { right: -26vmax; bottom: -25vmax; transform: rotate(25deg); }
+
+    .page-shell {
+      width: min(880px, calc(100% - 36px));
+      min-height: 100svh;
+      margin: 0 auto;
+      display: grid;
+      place-items: center;
+      padding: 88px 0 52px;
+    }
+
+    .brand {
+      position: fixed;
+      top: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: var(--rose-deep);
+      font-family: Arial, "Segoe UI", Tahoma, sans-serif;
+      font-size: .78rem;
+      letter-spacing: .24em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .volume-control {
+      position: fixed;
+      top: 18px;
+      right: 18px;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .volume-button {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      border-radius: 50%;
+      background: var(--rose-light);
+      color: var(--rose-deep);
+      box-shadow: 0 8px 22px var(--shadow);
+      transition: transform .2s ease, background .2s ease;
+    }
+
+    .volume-button:hover, .volume-control.is-open .volume-button { transform: translateY(-2px); background: var(--rose-soft); }
+    .volume-button svg { width: 18px; height: 18px; fill: currentColor; }
+
+    .volume-panel {
+      width: 0;
+      overflow: hidden;
+      opacity: 0;
+      padding: 0;
+      border-radius: 999px;
+      background: var(--rose-light);
+      box-shadow: 0 8px 22px var(--shadow);
+      transition: width .22s ease, opacity .2s ease, padding .22s ease;
+    }
+
+    .volume-control:hover .volume-panel, .volume-control:focus-within .volume-panel, .volume-control.is-open .volume-panel {
+      width: 126px;
+      opacity: 1;
+      padding: 10px 13px;
+    }
+
+    .volume-range { width: 100%; accent-color: var(--text); cursor: pointer; }
+
+    .screen {
+      width: 100%;
+      opacity: 0;
+      transform: translateY(10px);
+      animation: arrive .55s ease forwards;
+    }
+
+    @keyframes arrive { to { opacity: 1; transform: translateY(0); } }
+
+    .card {
+      position: relative;
+      width: min(680px, 100%);
+      margin: 0 auto;
+      padding: clamp(28px, 6vw, 58px);
+      border: 1px solid var(--rose-light);
+      border-radius: 35px 15px 35px 15px;
+      background: rgba(255, 255, 255, .16);
+      box-shadow: 0 16px 50px var(--shadow);
+    }
+
+    h1, h2, p { margin-top: 0; }
+
+    h1, h2 {
+      color: var(--text);
+      font-family: Arial, "Segoe UI", Tahoma, sans-serif;
+      font-weight: 600;
+      line-height: 1.32;
+    }
+
+    h1 { font-size: clamp(2.2rem, 8vw, 4.7rem); margin-bottom: 14px; }
+    h2 { font-size: clamp(1.7rem, 5vw, 3.1rem); margin-bottom: 24px; }
+    .copy { font-size: clamp(1rem, 2.5vw, 1.16rem); line-height: 1.85; text-align: left; }
+    .soft { color: var(--rose-deep); font-size: .9rem; line-height: 1.7; }
+
+    .form-row { display: flex; flex-wrap: wrap; gap: 11px; margin-top: 32px; }
+
+    .text-input {
+      min-width: min(100%, 260px);
+      flex: 1;
+      padding: 15px 18px;
+      border: 1px solid var(--rose-mid);
+      outline: 0;
+      border-radius: 999px;
+      background: rgba(252, 232, 240, .65);
+      color: var(--rose-deep);
+      box-shadow: inset 0 0 0 3px rgba(251, 244, 235, .35);
+    }
+
+    .text-input::placeholder { color: var(--rose-deep); opacity: .65; }
+    .text-input:focus { border-color: var(--rose-deep); }
+
+    .pill, .action-button, .choice-button {
+      padding: 14px 21px;
+      border-radius: 999px;
+      background: var(--rose-light);
+      color: var(--rose-deep);
+      box-shadow: 0 8px 20px var(--shadow);
+      transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+    }
+
+    .pill:hover, .action-button:hover, .choice-button:hover {
+      transform: translateY(-3px);
+      background: var(--rose-soft);
+      box-shadow: 0 11px 25px var(--shadow);
+    }
+
+    .typing-card { min-height: 275px; display: flex; flex-direction: column; justify-content: center; }
+    .typing-text { min-height: 132px; white-space: pre-wrap; text-align: center; text-wrap: balance; }
+    .typing-cursor::after { content: "|"; color: var(--rose-mid); animation: blink 1s step-end infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    .button-area { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; margin-top: 30px; }
+
+    .ask-card { text-align: center; overflow: visible; }
+    .yes-wrap { position: relative; z-index: 2; }
+    #yes-button { min-width: 118px; font-size: 1.16rem; transform-origin: center; }
+    #no-button { position: relative; z-index: 1; min-width: 105px; }
+    .pleas { min-height: 48px; margin: 17px auto 0; max-width: 250px; color: var(--rose-deep); font-size: 9px; line-height: 1.45; }
+    .pleas:empty { display: none; }
+
+    .calendar-card { width: min(840px, 100%); padding: clamp(22px, 4vw, 42px); }
+    .calendar-note { margin-bottom: 19px; line-height: 1.65; color: var(--text); text-align: left; }
+    .priority-selector, .selected-days { display: flex; flex-wrap: wrap; gap: 8px; margin: 15px 0; }
+    .priority-chip, .selected-chip {
+      border: 1px solid var(--rose-mid);
+      border-radius: 999px;
+      padding: 8px 12px;
+      background: transparent;
+      color: var(--rose-deep);
+      font-size: .76rem;
+    }
+    .priority-chip.active { background: var(--rose-mid); color: var(--cream); }
+    .selected-chip { color: var(--text); background: rgba(252, 232, 240, .55); }
+
+    .calendar-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 27px 0 13px; }
+    .calendar-title { margin: 0; color: var(--text); font-family: Arial, "Segoe UI", Tahoma, sans-serif; font-size: 1.55rem; }
+    .month-control { width: 37px; height: 37px; border-radius: 50%; background: var(--rose-light); color: var(--rose-deep); font-size: 1.2rem; }
+    .month-control:disabled { opacity: .38; cursor: default; }
+    .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 7px; }
+    .weekday { text-align: center; color: var(--rose-deep); font-size: .67rem; padding-bottom: 5px; }
+    .day { min-height: 42px; border-radius: 12px; background: rgba(252, 232, 240, .47); color: var(--rose-deep); font-size: .85rem; }
+    .day:hover { background: var(--rose-soft); transform: translateY(-1px); }
+    .day.empty { background: transparent; cursor: default; }
+    .day.selected-1 { background: #F4B8CB; color: var(--cream); }
+    .day.selected-2 { background: #F9CFE0; color: var(--rose-deep); }
+    .day.selected-3 { background: #FCE8F0; box-shadow: inset 0 0 0 1px var(--rose-mid); }
+    .calendar-progress { margin: 18px 0 0; color: var(--rose-deep); font-size: .8rem; }
+
+    .quiz-card { text-align: center; }
+    .quiz-answer { width: 100%; margin-top: 15px; }
+    .quiz-message { margin: 20px auto 0; max-width: 500px; color: var(--text); line-height: 1.65; text-align: center; text-wrap: balance; }
+
+    .dress-card { width: min(760px, 100%); }
+    .dress-card h2 { font-size: clamp(1.35rem, 3.3vw, 2.15rem); }
+    .dress-form { margin-top: 25px; }
+
+    .finish { text-align: center; }
+    .finish .big-heart { display: block; margin: 24px 0 15px; color: var(--rose-mid); font-size: clamp(5rem, 20vw, 9rem); line-height: .75; }
+    .plan-lines { margin: 25px 0 0; padding: 0; list-style: none; color: var(--text); font-size: .9rem; line-height: 2; text-align: left; }
+
+    .modal-backdrop {
+      position: fixed;
+      z-index: 30;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 22px;
+      background: rgba(251, 244, 235, .68);
+      backdrop-filter: blur(7px);
+    }
+
+    .modal {
+      width: min(440px, 100%);
+      padding: 33px;
+      border-radius: 26px 11px 26px 11px;
+      background: var(--blush);
+      color: var(--cream);
+      box-shadow: 0 18px 55px rgba(217, 137, 168, .32);
+      text-align: center;
+    }
+    .modal h3, .modal p { color: var(--cream); }
+    .modal h3 { margin-bottom: 14px; font-family: Arial, "Segoe UI", Tahoma, sans-serif; font-size: 1.55rem; font-weight: 600; }
+    .modal p { line-height: 1.7; }
+    .modal .text-input { width: 100%; margin: 9px 0 14px; background: rgba(251, 244, 235, .22); border-color: var(--cream); color: var(--cream); }
+    .modal .text-input::placeholder { color: var(--cream); }
+    .modal .pill { background: var(--cream); color: var(--rose-deep); }
+    .modal .pill:hover { background: var(--rose-light); }
+
+    .music-gate {
+      position: fixed;
+      z-index: 40;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background: rgba(251, 244, 235, .42);
+      backdrop-filter: blur(2px);
+      transition: opacity .45s ease, visibility .45s ease;
+    }
+
+    .music-gate.is-hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+
+    .music-gate-label {
+      color: var(--text);
+      font-size: clamp(1.45rem, 5vw, 2.25rem);
+      font-weight: 600;
+      text-align: center;
+      text-shadow: 0 4px 16px rgba(251, 244, 235, .95);
+      pointer-events: none;
+    }
+
+    .music-gate:hover .music-gate-label { transform: translateY(-2px); }
+
+    .hidden { display: none !important; }
+    #background-audio { display: none; }
+
+    @media (max-width: 560px) {
+      .brand { top: 19px; font-size: .62rem; }
+      .volume-control { top: auto; bottom: 15px; right: 15px; }
+      .page-shell { padding-top: 75px; padding-bottom: 72px; }
+      .calendar-grid { gap: 4px; }
+      .day { min-height: 37px; font-size: .76rem; }
+      .weekday { font-size: .56rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="ambient" aria-hidden="true"></div>
+  <div class="brand">một lời mời nho nhỏ ✿</div>
+  <div class="volume-control" id="volume-control">
+    <button class="volume-button" id="volume-button" type="button" aria-label="Điều chỉnh âm lượng" aria-expanded="false">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4zm12.5 3a4.5 4.5 0 0 0-2.1-3.8v7.6a4.5 4.5 0 0 0 2.1-3.8zm-2.1-9.3v2.1a7.7 7.7 0 0 1 0 14.4v2.1a9.8 9.8 0 0 0 0-18.6z" /></svg>
+    </button>
+    <div class="volume-panel">
+      <input class="volume-range" id="volume-range" type="range" min="0" max="100" value="55" aria-label="Âm lượng" />
+    </div>
+  </div>
+  <audio id="background-audio" loop preload="auto"></audio>
+  <main class="page-shell" id="app" aria-live="polite"></main>
+
+  <div class="music-gate" id="music-gate" role="button" tabindex="0" aria-label="Chạm để bắt đầu">
+    <span class="music-gate-label">Chạm nhẹ đi nè</span>
+  </div>
+
+  <div class="modal-backdrop hidden" id="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal" id="modal-content"></div>
+  </div>
+
+  <script>
+    // Đặt file MP3 của bạn cùng thư mục với index.html, hoặc đổi đường dẫn tại đây.
+    const AUDIO_FILE_URL = './beat_love.mp3';
+    const TYPE_DELAY = 40;
+
+    const app = document.getElementById('app');
+    const modalBackdrop = document.getElementById('modal-backdrop');
+    const modalContent = document.getElementById('modal-content');
+    const volumeControl = document.getElementById('volume-control');
+    const volumeButton = document.getElementById('volume-button');
+    const volumeRange = document.getElementById('volume-range');
+    const musicGate = document.getElementById('music-gate');
+    const player = document.getElementById('background-audio');
+    const state = {
+      screen: 'welcome',
+      noCount: 0,
+      quizNoCount: 0,
+      quizMistakes: 0,
+      calendarMonth: 7,
+      calendarPriority: 1,
+      dates: { 1: null, 2: null, 3: null },
+      timers: []
+    };
+
+    const messages = {
+      apology: 'Anh xin lỗi vì thời gian vừa qua đã để em chịu nhiều ấm ức, thiệt thòi, mà anh lại ko tinh tế để nhìn ra điều đó. Anh sẽ sửa sai ngay bây giờ.',
+      safe: 'Thông báo tới nàng, lịch trình hôm ni khá là dày nhaaa, yêu cầu iêu thắt dây an toàn, ăn uống và ngủ nghỉ đầy đủ để có sức khỏe thiệt là tốt nhaaa. Và chúng ta sẽ bắt đầu một ngày date từ 9h sáng (đã khấu trừ, bổ sung tới 9h30 đi là vừaaaa)',
+      booth: 'Mở đầu buổi date ngày hôm nay cũm sẽ như bao lần khác, đó chính là hai ta cùng chụp photoboothhhhhh tại Dương Khuê vào lúc 9h30 (+/- 30ph) hê hê',
+      lunch: 'Kế tới, chúng ta sẽ có một bữa trưa thật nà sớm sủa, hơn hẳn mọi lần lun. Đó chính là tại Vô Vi chayy tại 11 Yên Lãng, Đống Đa) vào lúc 10h45 nhaaa. Dạo đây anh nhận ra ở đôi ta thường xảy ra xích mích vứi nhauuu. Anh và em chắc phải thanh tẩy hồng trần thoiii',
+      paint: 'Xong òiiii, giờ nhá là mình sẽ đi tới một nơi mình cũng muốn đi với nhau từ lâu lắm rồi. Hê hê hê, chính là đi làm tranh ở Vụng tô tí tại 56 Nguyễn Phúc Lai, Đống Đa vào lúc 12h30 nhaaaa',
+      japanese: 'Ròiii, em đi được tới đây thì mình anh thông báo tới em là chúng ta sẽ thưởng thức bữa ăn mà lần trước em đã đề xuất với anh. Em đoán ra là gì khônggg????',
+      lake: 'Anh vẫn muốn ta tìm về chốn xưa ngay sau khi ăn nàyy, dù có đi rất nhiều lần nhưng mà anh vẫn muốn cùng em đi tới dù cho có thêm nhiều lần đi chăng nữa. Chắc em cũng đoán đó là nơi nào rồi phải không. Đúm òi, đó chính là Hồ Tây, nhưng lần này ta cùng nhau tới nơi mà chính xác là lần đầu ta cùng tới đó nhaaaaa',
+      home: 'Và như nhìu lần trước anh cũm từng nói với em thì đây sẽ là điểm dừng chân của chúng ta. Đó chính là hây tôm tại 29 ngõ 565 Lạc Long Quân, Tây Hồ hehe. Nhưng mà nãy chúng ta đi ăn mất òi nên anh khong thể cùng nấu ăn với em đượccc (nói z chớ chắc chắn bụng anh đói đó nên chúng ta pha mì nhaaa).'
+    };
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>'"]/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[character]);
+    }
+
+    function clearTimers() {
+      state.timers.forEach(clearTimeout);
+      state.timers = [];
+    }
+
+    function later(callback, delay) {
+      const timer = setTimeout(callback, delay);
+      state.timers.push(timer);
+      return timer;
+    }
+
+    function normalize(value) {
+      return String(value || '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .replace(/đ/g, 'd')
+        .trim();
+    }
+
+    function validName(value) {
+      const words = normalize(value).split(/[^a-z]+/).filter(Boolean);
+      return words.length > 0 && words.every(word => ['nguyen', 'anh', 'tu'].includes(word));
+    }
+
+    function validJapanese(value) {
+      return /nhat+/.test(normalize(value));
+    }
+
+    function showModal({ title, text, button = 'dạaa', onConfirm, input = false, placeholder = '' }) {
+      modalContent.innerHTML = `
+        <h3 id="modal-title">${escapeHtml(title)}</h3>
+        <p>${escapeHtml(text)}</p>
+        ${input ? `<input class="text-input" id="modal-input" placeholder="${escapeHtml(placeholder)}" />` : ''}
+        <button class="pill" id="modal-confirm" type="button">${escapeHtml(button)}</button>`;
+      modalBackdrop.classList.remove('hidden');
+      const modalInput = document.getElementById('modal-input');
+      if (modalInput) later(() => modalInput.focus(), 40);
+      document.getElementById('modal-confirm').addEventListener('click', () => {
+        const value = modalInput ? modalInput.value : undefined;
+        if (onConfirm) onConfirm(value);
+      });
+      if (modalInput) modalInput.addEventListener('keydown', event => {
+        if (event.key === 'Enter') document.getElementById('modal-confirm').click();
+      });
+    }
+
+    function closeModal() { modalBackdrop.classList.add('hidden'); }
+
+    function startMusic() {
+      if (!player.dataset.loaded) {
+        player.src = AUDIO_FILE_URL;
+        player.dataset.loaded = 'true';
+      }
+      player.play().catch(() => {});
+    }
+
+    function setVolume(value) {
+      const volume = Math.max(0, Math.min(100, Number(value)));
+      player.volume = volume / 100;
+      player.muted = volume === 0;
+    }
+
+    volumeButton.addEventListener('click', () => {
+      const isOpen = volumeControl.classList.toggle('is-open');
+      volumeButton.setAttribute('aria-expanded', String(isOpen));
+      if (isOpen) volumeRange.focus();
+      startMusic();
+      setVolume(volumeRange.value);
+    });
+    volumeRange.addEventListener('input', () => setVolume(volumeRange.value));
+    player.addEventListener('loadeddata', () => setVolume(volumeRange.value));
+    function dismissMusicGate() {
+      startMusic();
+      setVolume(volumeRange.value);
+      musicGate.classList.add('is-hidden');
+    }
+    musicGate.addEventListener('click', dismissMusicGate);
+    musicGate.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') dismissMusicGate();
+    });
+
+    function screen(template) {
+      clearTimers();
+      app.innerHTML = `<section class="screen">${template}</section>`;
+    }
+
+    function go(next) {
+      state.screen = next;
+      render();
+    }
+
+    function renderWelcome() {
+      screen(`
+        <div class="card">
+          <h1>Chào nàng<br>đáng iêuuu</h1>
+          <p class="copy">Trước khi mở lời mời bí mật này, cho anh xin một dấu hiệu nhận biết nàng nhaaa.</p>
+          <form class="form-row" id="name-form">
+            <input class="text-input" id="name-input" autocomplete="name" placeholder="Nhập tên của nàng..." aria-label="Nhập tên" />
+            <button class="pill" type="submit">mở thư ✦</button>
+          </form>
+          <p class="soft" style="margin:18px 0 0">Gợi ý: chỉ cần một phần tên cũng được nè.</p>
+        </div>`);
+      const form = document.getElementById('name-form');
+      const input = document.getElementById('name-input');
+      later(() => input.focus(), 180);
+      form.addEventListener('submit', event => {
+        event.preventDefault();
+        if (validName(input.value)) go('apology');
+        else showModal({
+          title: 'Mật mã chưa đúng òiii',
+          text: 'Hình như nàng thử lại với tên thân thương của nàng xem sao nhaaa.',
+          button: 'dạaa',
+          onConfirm: () => { closeModal(); input.focus(); }
+        });
+      });
+    }
+
+    function renderTyped({ text, next, previous }) {
+      screen(`
+        <div class="card typing-card">
+          <h2 class="typing-text typing-cursor" id="typing-text"></h2>
+          <div class="button-area hidden" id="typed-action">
+            <button class="action-button" id="typed-back" type="button">Quay về</button>
+            <button class="action-button" id="typed-button" type="button">Tiếp tục nha</button>
+          </div>
+        </div>`);
+      const target = document.getElementById('typing-text');
+      let index = 0;
+      const step = () => {
+        target.textContent = text.slice(0, index);
+        index += 1;
+        if (index <= text.length) later(step, TYPE_DELAY);
+        else {
+          target.classList.remove('typing-cursor');
+          document.getElementById('typed-action').classList.remove('hidden');
+          document.getElementById('typed-button').addEventListener('click', () => go(next));
+          document.getElementById('typed-back').addEventListener('click', () => go(previous));
+        }
+      };
+      step();
+    }
+
+    function renderChoice() {
+      const pleas = [
+        'Nàng cho anh một cơ hội nhỏ xíu thôi cũng được màaa.',
+        'Đi cùng anh một bữa thôi, anh ngoan thiệt màaa.',
+        'Anh hứa sẽ cố gắng để nàng thật vui đó.',
+        'Ấn yes đi màaa, anh năn nỉ nèee.',
+        'Một cái date nho nhỏ, một niềm vui thiệt to nhaaa.',
+        'Nàng ơi, yes đi mà... anh chờ nè.'
+      ];
+      const yesScale = Math.min(1 + state.noCount * .45, 8.6);
+      screen(`
+        <div class="card ask-card">
+          <h2>Vậy em có muốn<br>đi chơi cùng anh?</h2>
+          <div class="button-area">
+            <div class="yes-wrap"><button class="choice-button" id="yes-button" type="button" style="transform:scale(${yesScale})">yes</button></div>
+            <button class="choice-button" id="no-button" type="button">no</button>
+          </div>
+          <p class="pleas">${state.noCount ? escapeHtml(pleas[Math.min(state.noCount - 1, pleas.length - 1)]) : ''}</p>
+        </div>`);
+      document.getElementById('yes-button').addEventListener('click', () => go('calendar'));
+      document.getElementById('no-button').addEventListener('click', () => {
+        state.noCount += 1;
+        renderChoice();
+      });
+    }
+
+    const monthNames = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'];
+    const priorities = { 1: 'ưu tiên nhất', 2: 'ưu tiên thứ hai', 3: 'không ưng ý lắm nhưng nếu chọn vẫn được' };
+
+    function dateText(value) {
+      if (!value) return 'chưa chọn';
+      const [, month, day] = value.match(/2026-(\d{2})-(\d{2})/);
+      return `${day}/${month}/2026`;
+    }
+
+    function renderCalendar() {
+      const selected = new Map(Object.entries(state.dates).filter(([, value]) => value).map(([key, value]) => [value, Number(key)]));
+      const allDatesSelected = Object.values(state.dates).every(Boolean);
+      const firstDay = new Date(2026, state.calendarMonth, 1).getDay();
+      const count = new Date(2026, state.calendarMonth + 1, 0).getDate();
+      const cells = [];
+      for (let index = 0; index < firstDay; index += 1) cells.push('<div class="day empty" aria-hidden="true"></div>');
+      for (let day = 1; day <= count; day += 1) {
+        const key = `2026-${String(state.calendarMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        const selectedPriority = selected.get(key);
+        cells.push(`<button class="day ${selectedPriority ? `selected-${selectedPriority}` : ''}" data-day="${key}" type="button">${day}</button>`);
+      }
+      const selectedChips = [1, 2, 3].map(priority => `<span class="selected-chip">${priorities[priority]}: ${dateText(state.dates[priority])}</span>`).join('');
+      screen(`
+        <div class="card calendar-card">
+          <p class="calendar-note">Hiện nay, anh chưa rõ ngày nào nàng rảnh, anh nhờ nàng đề xuất phù hợp với nàng để anh sắp xếp nhaaaa.</p>
+          <div class="priority-selector">${[1, 2, 3].map(priority => `<button class="priority-chip ${state.calendarPriority === priority ? 'active' : ''}" data-priority="${priority}" type="button">${priorities[priority]}</button>`).join('')}</div>
+          <div class="selected-days">${selectedChips}</div>
+          <div class="calendar-head">
+            <button class="month-control" id="previous-month" ${state.calendarMonth === 0 ? 'disabled' : ''} aria-label="Tháng trước" type="button">‹</button>
+            <h2 class="calendar-title">${monthNames[state.calendarMonth]} — 2026</h2>
+            <button class="month-control" id="next-month" ${state.calendarMonth === 11 ? 'disabled' : ''} aria-label="Tháng sau" type="button">›</button>
+          </div>
+          <div class="calendar-grid">
+            ${['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'].map(day => `<div class="weekday">${day}</div>`).join('')}
+            ${cells.join('')}
+          </div>
+          <p class="calendar-progress">Đã chọn ${Object.values(state.dates).filter(Boolean).length}/3 ngày — đang chọn: ${priorities[state.calendarPriority]}.</p>
+          <div class="button-area ${allDatesSelected ? '' : 'hidden'}" id="calendar-action">
+            <button class="action-button" id="calendar-continue" type="button">Tiếp tục nha</button>
+          </div>
+        </div>`);
+      document.querySelectorAll('[data-priority]').forEach(button => button.addEventListener('click', () => {
+        state.calendarPriority = Number(button.dataset.priority);
+        renderCalendar();
+      }));
+      document.querySelectorAll('[data-day]').forEach(button => button.addEventListener('click', () => {
+        const value = button.dataset.day;
+        Object.keys(state.dates).forEach(priority => { if (state.dates[priority] === value) state.dates[priority] = null; });
+        state.dates[state.calendarPriority] = value;
+        const missing = [1, 2, 3].find(priority => !state.dates[priority]);
+        if (missing) state.calendarPriority = missing;
+        if (Object.values(state.dates).every(Boolean)) {
+          renderCalendar();
+        } else renderCalendar();
+      }));
+      document.getElementById('previous-month').addEventListener('click', () => { state.calendarMonth -= 1; renderCalendar(); });
+      document.getElementById('next-month').addEventListener('click', () => { state.calendarMonth += 1; renderCalendar(); });
+      if (allDatesSelected) {
+        document.getElementById('calendar-continue').addEventListener('click', () => go('safe'));
+      }
+    }
+
+    function renderQuiz() {
+      screen(`
+        <div class="card quiz-card">
+          <h2 class="typing-text typing-cursor" id="typing-text"></h2>
+          <div class="button-area hidden" id="quiz-action">
+            <button class="action-button" id="quiz-continue" type="button">Tiếp tục nha</button>
+          </div>
+          <div class="button-area hidden" id="quiz-options">
+            <button class="choice-button" id="quiz-yes" type="button">có</button>
+            <button class="choice-button" id="quiz-no" type="button">khôngg</button>
+          </div>
+          <div id="quiz-detail"></div>
+        </div>`);
+      const target = document.getElementById('typing-text');
+      let index = 0;
+      const type = () => {
+        target.textContent = messages.japanese.slice(0, index);
+        index += 1;
+        if (index <= messages.japanese.length) later(type, TYPE_DELAY);
+        else {
+          target.classList.remove('typing-cursor');
+          document.getElementById('quiz-action').classList.remove('hidden');
+          document.getElementById('quiz-continue').addEventListener('click', () => {
+            document.getElementById('quiz-action').classList.add('hidden');
+            document.getElementById('quiz-options').classList.remove('hidden');
+            bindQuizOptions();
+          });
+        }
+      };
+      type();
+    }
+
+    function bindQuizOptions() {
+      document.getElementById('quiz-yes').addEventListener('click', showQuizInput);
+      document.getElementById('quiz-no').addEventListener('click', () => {
+        state.quizNoCount += 1;
+        const detail = document.getElementById('quiz-detail');
+        document.getElementById('quiz-options').classList.add('hidden');
+        if (state.quizNoCount === 1) {
+          detail.innerHTML = '<p class="quiz-message">ựaaaaa, hay là nàngg thử đoán đi cho nóa kịch tính</p><button class="pill" id="quiz-try-again" type="button">dạaa</button>';
+          document.getElementById('quiz-try-again').addEventListener('click', () => {
+            detail.innerHTML = '';
+            document.getElementById('quiz-options').classList.remove('hidden');
+          });
+        } else {
+          revealJapanese('nànggg lạnh lùng quá đấy, nhưng không sao, anh thíchhhh, và anh bật mí luôn nha, đó chính là mình sẽ đi ăn đồ Nhậttttt nhaaaa');
+        }
+      });
+    }
+
+    function showQuizInput() {
+      document.getElementById('quiz-options').classList.add('hidden');
+      const detail = document.getElementById('quiz-detail');
+      detail.innerHTML = '<form id="quiz-form" class="form-row"><input id="quiz-input" class="text-input quiz-answer" placeholder="Nàng đoán xem là gì nèee..." /><button class="pill" type="submit">đoán nè ✦</button></form><div id="quiz-feedback"></div>';
+      const input = document.getElementById('quiz-input');
+      input.focus();
+      document.getElementById('quiz-form').addEventListener('submit', event => {
+        event.preventDefault();
+        if (validJapanese(input.value)) go('lake');
+        else {
+          state.quizMistakes += 1;
+          if (state.quizMistakes >= 3) revealJapanese('tiếc quá, vầy anh sẽ bật mí luôn nha, đó chính là mình sẽ đi ăn đồ Nhậttttt tại Shinsui 5/551 Kim Mã, Ngọc Hà vào 18h nhaaaa');
+          else {
+            document.getElementById('quiz-feedback').innerHTML = `<p class="quiz-message">${state.quizMistakes === 1 ? 'chưa đúng rồiii, nàng thử đoán thêm một lần nhaaa' : 'nàngg cố thêm một lần nữa thuii, đoán trúng là có thưởng liền nèee'}</p>`;
+            input.value = '';
+            input.focus();
+          }
+        }
+      });
+    }
+
+    function revealJapanese(text) {
+      document.getElementById('quiz-detail').innerHTML = `<p class="quiz-message">${escapeHtml(text)}</p><button class="pill" id="japanese-reveal" type="button">dạaaaa</button>`;
+      document.getElementById('japanese-reveal').addEventListener('click', () => go('lake'));
+    }
+
+    function renderDress() {
+      screen(`
+        <div class="card dress-card">
+          <h2>Và như nàng đã thấy, lịch trình đủ cả òi thế nhưng mình vẫn thíu thíu gì đúm khum.</h2>
+          <p class="copy">Tất nhiên không thể không thiếu mục tạo nên phần bắt mắt nhưng mà anh để tới giờ để nàng coi qua một ngày của chúng ta như nào và nàng nghĩ rằng 2 ta sẽ mặc như nào thì thuận (mắt) vợ xuôi (tai) chồng, tát mười biển Đông cũng cạn. Nàng chim ưng quả nào nịnh mắt thì nàng hãy nhập câu trả lời ở phần bên dưới nhaaa.</p>
+          <p class="soft">Phần này nàng hãy để câu trả lời là “Vế A - Vế B” (ví dụ: Anh áo polo, quần âu ống hẹp - Em váy trắng).</p>
+          <form class="dress-form form-row" id="dress-form">
+            <input class="text-input" id="dress-input" placeholder="Vế A - Vế B" aria-label="Dresscode" />
+            <button class="pill" type="submit">chốt kèo ✦</button>
+          </form>
+        </div>`);
+      const form = document.getElementById('dress-form');
+      const input = document.getElementById('dress-input');
+      form.addEventListener('submit', event => {
+        event.preventDefault();
+        if (/^\S(?:.*\S)?\s-\s\S(?:.*\S)?$/.test(input.value.trim())) go('finish');
+        else showModal({
+          title: 'ựaaaa',
+          text: 'phiền nàng nhập lại một chút nhaaa',
+          button: 'dạ vângggg',
+          onConfirm: () => { closeModal(); input.focus(); }
+        });
+      });
+    }
+
+    function renderFinish() {
+      const dateList = [1, 2, 3].map(priority => `<li>${priorities[priority]}: ${dateText(state.dates[priority])}</li>`).join('');
+      screen(`
+        <div class="card finish">
+          <span class="big-heart">♥</span>
+          <h2>Hẹn nàng<br>một ngày thiệt vui nhaaa</h2>
+          <p class="copy">Anh sẽ chờ để cùng nàng viết tiếp hành trình này.</p>
+          <ul class="plan-lines">${dateList}</ul>
+          <p class="soft" style="margin-top:26px">Nhớ mang theo nụ cười của nàng thôi, còn lại để anh looo.</p>
+        </div>`);
+    }
+
+    function render() {
+      switch (state.screen) {
+        case 'welcome': renderWelcome(); break;
+        case 'apology': renderTyped({ text: messages.apology, next: 'choice', previous: 'welcome' }); break;
+        case 'choice': renderChoice(); break;
+        case 'calendar': renderCalendar(); break;
+        case 'safe': renderTyped({ text: messages.safe, next: 'booth', previous: 'calendar' }); break;
+        case 'booth': renderTyped({ text: messages.booth, next: 'lunch', previous: 'safe' }); break;
+        case 'lunch': renderTyped({ text: messages.lunch, next: 'paint', previous: 'booth' }); break;
+        case 'paint': renderTyped({ text: messages.paint, next: 'japanese', previous: 'lunch' }); break;
+        case 'japanese': renderQuiz(); break;
+        case 'lake': renderTyped({ text: messages.lake, next: 'home', previous: 'japanese' }); break;
+        case 'home': renderTyped({ text: messages.home, next: 'dress', previous: 'lake' }); break;
+        case 'dress': renderDress(); break;
+        case 'finish': renderFinish(); break;
+        default: renderWelcome();
+      }
+    }
+
+    render();
+  </script>
+</body>
+</html>
