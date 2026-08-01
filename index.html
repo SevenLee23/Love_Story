@@ -95,6 +95,7 @@
     }
 
     .volume-button {
+      position: relative;
       width: 42px;
       height: 42px;
       display: grid;
@@ -109,6 +110,15 @@
 
     .volume-button:hover, .volume-control.is-open .volume-button { transform: translateY(-2px); background: var(--rose-soft); }
     .volume-button svg { width: 18px; height: 18px; fill: currentColor; }
+    .volume-button.is-muted::after {
+      content: "";
+      position: absolute;
+      width: 25px;
+      height: 2px;
+      border-radius: 99px;
+      background: currentColor;
+      transform: rotate(-45deg);
+    }
 
     .volume-panel {
       width: 0;
@@ -197,6 +207,8 @@
 
     .typing-card { min-height: 275px; display: flex; flex-direction: column; justify-content: center; }
     .typing-text { min-height: 132px; white-space: pre-wrap; text-align: center; text-wrap: balance; }
+    .type-char { visibility: hidden; }
+    .type-char.is-visible { visibility: visible; }
     .typing-cursor::after { content: "|"; color: var(--rose-mid); animation: blink 1s step-end infinite; }
     @keyframes blink { 50% { opacity: 0; } }
 
@@ -339,6 +351,7 @@
 
   <script>
     const AUDIO_FILE_URL = './beat_love.mp3';
+    const DEFAULT_VOLUME = 55;
     const TYPE_DELAY = 65;
 
     const app = document.getElementById('app');
@@ -357,6 +370,7 @@
       calendarMonth: 7,
       calendarPriority: 1,
       dates: { 1: null, 2: null, 3: null },
+      isMuted: false,
       timers: []
     };
 
@@ -373,6 +387,24 @@
 
     function escapeHtml(value) {
       return String(value).replace(/[&<>'"]/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[character]);
+    }
+
+    function typeText(target, text, onComplete) {
+      target.innerHTML = Array.from(text)
+        .map(character => `<span class="type-char">${escapeHtml(character)}</span>`)
+        .join('');
+      const characters = target.querySelectorAll('.type-char');
+      let index = 0;
+      const revealNextCharacter = () => {
+        if (index < characters.length) {
+          characters[index].classList.add('is-visible');
+          index += 1;
+          later(revealNextCharacter, TYPE_DELAY);
+        } else {
+          onComplete();
+        }
+      };
+      later(revealNextCharacter, TYPE_DELAY);
     }
 
     function clearTimers() {
@@ -434,19 +466,33 @@
 
     function setVolume(value) {
       const volume = Math.max(0, Math.min(100, Number(value)));
-      player.volume = volume / 100;
-      player.muted = volume === 0;
+      volumeRange.value = String(volume);
+      state.isMuted = volume === 0;
+      applyAudioVolume();
     }
 
-    volumeButton.addEventListener('click', () => {
-      const isOpen = volumeControl.classList.toggle('is-open');
-      volumeButton.setAttribute('aria-expanded', String(isOpen));
-      if (isOpen) volumeRange.focus();
-      startMusic();
-      setVolume(volumeRange.value);
-    });
+    function applyAudioVolume() {
+      player.volume = Number(volumeRange.value) / 100;
+      player.muted = state.isMuted || Number(volumeRange.value) === 0;
+      volumeButton.classList.toggle('is-muted', player.muted);
+      volumeButton.setAttribute('aria-label', player.muted ? 'Bật tiếng' : 'Tắt tiếng');
+    }
+
+    function toggleMute() {
+      if (state.isMuted || Number(volumeRange.value) === 0) {
+        state.isMuted = false;
+        if (Number(volumeRange.value) === 0) volumeRange.value = String(DEFAULT_VOLUME);
+      } else {
+        state.isMuted = true;
+      }
+      applyAudioVolume();
+    }
+
+    volumeRange.value = String(DEFAULT_VOLUME);
+    setVolume(DEFAULT_VOLUME);
+    volumeButton.addEventListener('click', toggleMute);
     volumeRange.addEventListener('input', () => setVolume(volumeRange.value));
-    player.addEventListener('loadeddata', () => setVolume(volumeRange.value));
+    player.addEventListener('loadeddata', applyAudioVolume);
     function dismissMusicGate() {
       startMusic();
       setVolume(volumeRange.value);
@@ -503,19 +549,12 @@
           </div>
         </div>`);
       const target = document.getElementById('typing-text');
-      let index = 0;
-      const step = () => {
-        target.textContent = text.slice(0, index);
-        index += 1;
-        if (index <= text.length) later(step, TYPE_DELAY);
-        else {
-          target.classList.remove('typing-cursor');
-          document.getElementById('typed-action').classList.remove('hidden');
-          document.getElementById('typed-button').addEventListener('click', () => go(next));
-          document.getElementById('typed-back').addEventListener('click', () => go(previous));
-        }
-      };
-      step();
+      typeText(target, text, () => {
+        target.classList.remove('typing-cursor');
+        document.getElementById('typed-action').classList.remove('hidden');
+        document.getElementById('typed-button').addEventListener('click', () => go(next));
+        document.getElementById('typed-back').addEventListener('click', () => go(previous));
+      });
     }
 
     function renderChoice() {
@@ -620,22 +659,15 @@
           <div id="quiz-detail"></div>
         </div>`);
       const target = document.getElementById('typing-text');
-      let index = 0;
-      const type = () => {
-        target.textContent = messages.japanese.slice(0, index);
-        index += 1;
-        if (index <= messages.japanese.length) later(type, TYPE_DELAY);
-        else {
-          target.classList.remove('typing-cursor');
-          document.getElementById('quiz-action').classList.remove('hidden');
-          document.getElementById('quiz-continue').addEventListener('click', () => {
-            document.getElementById('quiz-action').classList.add('hidden');
-            document.getElementById('quiz-options').classList.remove('hidden');
-            bindQuizOptions();
-          });
-        }
-      };
-      type();
+      typeText(target, messages.japanese, () => {
+        target.classList.remove('typing-cursor');
+        document.getElementById('quiz-action').classList.remove('hidden');
+        document.getElementById('quiz-continue').addEventListener('click', () => {
+          document.getElementById('quiz-action').classList.add('hidden');
+          document.getElementById('quiz-options').classList.remove('hidden');
+          bindQuizOptions();
+        });
+      });
     }
 
     function bindQuizOptions() {
