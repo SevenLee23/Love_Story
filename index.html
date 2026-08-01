@@ -88,7 +88,7 @@
       position: fixed;
       top: 18px;
       right: 18px;
-      z-index: 10;
+      z-index: 50;
       display: flex;
       align-items: center;
       gap: 8px;
@@ -495,7 +495,7 @@
     player.addEventListener('loadeddata', applyAudioVolume);
     function dismissMusicGate() {
       startMusic();
-      setVolume(volumeRange.value);
+      applyAudioVolume();
       musicGate.classList.add('is-hidden');
     }
     musicGate.addEventListener('click', dismissMusicGate);

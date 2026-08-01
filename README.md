@@ -1,0 +1,1 @@
+- Updating gửi thông tin nhận được từ câu hỏi về GG sheet
