@@ -329,7 +329,7 @@
 </head>
 <body>
   <div class="ambient" aria-hidden="true"></div>
-  <div class="brand">một lời mời nho nhỏ ✿</div>
+  <div class="brand">Chữa lành cùng Anh Tú ✿</div>
   <div class="volume-control" id="volume-control">
     <button class="volume-button" id="volume-button" type="button" aria-label="Điều chỉnh âm lượng" aria-expanded="false">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4zm12.5 3a4.5 4.5 0 0 0-2.1-3.8v7.6a4.5 4.5 0 0 0 2.1-3.8zm-2.1-9.3v2.1a7.7 7.7 0 0 1 0 14.4v2.1a9.8 9.8 0 0 0 0-18.6z" /></svg>
@@ -342,7 +342,7 @@
   <main class="page-shell" id="app" aria-live="polite"></main>
 
   <div class="music-gate" id="music-gate" role="button" tabindex="0" aria-label="Chạm để bắt đầu">
-    <span class="music-gate-label">Chạm nhẹ đi nè</span>
+    <span class="music-gate-label">Nàng sẵn sàng chưaaaaaaa</span>
   </div>
 
   <div class="modal-backdrop hidden" id="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modal-title">
@@ -352,7 +352,7 @@
   <script>
     const AUDIO_FILE_URL = './beat_love.mp3';
     const DEFAULT_VOLUME = 55;
-    const TYPE_DELAY = 65;
+    const TYPE_DELAY = 1;
 
     const app = document.getElementById('app');
     const modalBackdrop = document.getElementById('modal-backdrop');
@@ -375,14 +375,15 @@
     };
 
     const messages = {
-      apology: 'Anh xin lỗi vì thời gian vừa qua đã để em chịu nhiều ấm ức, thiệt thòi, mà anh lại ko tinh tế để nhìn ra điều đó. Anh sẽ sửa sai ngay bây giờ.',
-      safe: 'Thông báo tới nàng, lịch trình hôm ni khá là dày nhaaa, yêu cầu iêu thắt dây an toàn, ăn uống và ngủ nghỉ đầy đủ để có sức khỏe thiệt là tốt nhaaa. Và chúng ta sẽ bắt đầu một ngày date từ 9h sáng (đã khấu trừ, bổ sung tới 9h30 đi là vừaaaa)',
-      booth: 'Mở đầu buổi date ngày hôm nay cũm sẽ như bao lần khác, đó chính là hai ta cùng chụp photoboothhhhhh tại Dương Khuê vào lúc 9h30 (+/- 30ph) hê hê',
-      lunch: 'Kế tới, chúng ta sẽ có một bữa trưa thật nà sớm sủa, hơn hẳn mọi lần lun. Đó chính là tại Vô Vi chayy tại 11 Yên Lãng, Đống Đa) vào lúc 10h45 nhaaa. Dạo đây anh nhận ra ở đôi ta thường xảy ra xích mích vứi nhauuu. Anh và em chắc phải thanh tẩy hồng trần thoiii',
-      paint: 'Xong òiiii, giờ nhá là mình sẽ đi tới một nơi mình cũng muốn đi với nhau từ lâu lắm rồi. Hê hê hê, chính là đi làm tranh ở Vụng tô tí tại 56 Nguyễn Phúc Lai, Đống Đa vào lúc 12h30 nhaaaa',
-      japanese: 'Ròiii, em đi được tới đây thì mình anh thông báo tới em là chúng ta sẽ thưởng thức bữa ăn mà lần trước em đã đề xuất với anh. Em đoán ra là gì khônggg????',
-      lake: 'Anh vẫn muốn ta tìm về chốn xưa ngay sau khi ăn nàyy, dù có đi rất nhiều lần nhưng mà anh vẫn muốn cùng em đi tới dù cho có thêm nhiều lần đi chăng nữa. Chắc em cũng đoán đó là nơi nào rồi phải không. Đúm òi, đó chính là Hồ Tây, nhưng lần này ta cùng nhau tới nơi mà chính xác là lần đầu ta cùng tới đó nhaaaaa',
-      home: 'Và như nhìu lần trước anh cũm từng nói với em thì đây sẽ là điểm dừng chân của chúng ta. Đó chính là hây tôm tại 29 ngõ 565 Lạc Long Quân, Tây Hồ hehe. Nhưng mà nãy chúng ta đi ăn mất òi nên anh khong thể cùng nấu ăn với em đượccc (nói z chớ chắc chắn bụng anh đói đó nên chúng ta pha mì nhaaa).'
+      apology: 'Anh xin lỗi vì thời gian vừa qua đã để em chịu nhiều ấm ức, thiệt thòi, mà anh lại không tinh tế để nhìn ra điều đó. Anh sẽ sửa sai ngay bây giờ đây nàng nhóo.',
+      safe: 'Thông báo tới nàng, lịch trình hôm tới đây khá là dày nhaaa, yêu cầu iêu thắt dây an toàn, ăn uống và ngủ nghỉ đầy đủ để có sức khỏe thiệt là tốt nhaaa. Timeline chúng ta bắt đầu từ 9h sáng (đã khấu trừ, bổ sung tới 9h30 đi là vừaaaa)',
+      booth: 'Mở đầu buổi date ngày hôm nay cũm sẽ như bao lần khác, đó chính là hai ta cùng chụp photoboothhhhhh tại Dương Khuê vào lúc 9h30 (±30ph) hê hê',
+      lunch: 'Kế tới, chúng ta sẽ có một bữa trưa thật sớm sủa, hơn hẳn mọi lần luon. Đó chính là tại Vô Vi chayy tại 11 Yên Lãng, Đống Đa) vào lúc 10h45 nhaaa. Dạo đây anh nhận ra ở đôi ta thường xảy ra xích mích vứi nhauuu. Anh và em chắc phải thanh tẩy hồng trần thoiii',
+      paint: 'Xong òiiii, giờ nhá là mình sẽ đi tới một nơi mình cũng muốn đi với nhau từ lâu lắm rồi. Hê hê hê, chính là đi làm tranh ở Vụng tô tí tại 56 Nguyễn Phúc Lai, Đống Đa vào lúc 12h15 nhaaaa',
+      japanese: 'Ròiii, em đi được tới đây thì mình anh thông báo tới em là chúng ta sẽ cùng thưởng thức bữa tối mà lần trước em đã đề xuất với anh. Em đoán ra là gì khônggg????',
+      then: 'Chính xác òiiii, nàng giỏi quáaaa. Và chúng ta sẽ đi ăn tối tại 5/551 Kim Mã Ngọc Hà nhaaaaa. Không gian sang trọng này, bắt mắt này, check-in cứ phải gọi nét căng. Đặc biệt là quán được feedback rất "sạch" nha, 5 sao lận đóoo',
+      lake: 'Và sau khi ăn tối xong, anh nghĩ chúng mình cần có thời gian để xuôi cơm đúng khom nào. Và anh muốn ta tìm về chốn cũ kia, dù có đi rất nhiều lần nhưng mà anh vẫn muốn cùng em đi tới dù cho có thêm nhiều lần đi chăng nữa. Chắc em cũng đoán đó là nơi nào rồi phải không. Đúm òi, đó chính là Hồ Tây, nhưng lần này ta cùng nhau tới nơi mà chính xác là lần đầu ta cùng tới đó nhaaaaa',
+      home: 'Và như nhìu lần trước anh cũm từng nói với em thì đây sẽ là điểm dừng chân của chúng ta. Đó chính là hây tôm tại nhà 29 ngõ 565 Lạc Long Quân, Tây Hồ hehe. Nhưng mà nãy chúng ta đi ăn mất òi nên anh khong thể cùng nấu ăn với em đượccc (nói z chớ chắc chắn bụng anh đói đó nên chúng ta pha mì nhaaa).'
     };
 
     function escapeHtml(value) {
@@ -493,6 +494,7 @@
     volumeButton.addEventListener('click', toggleMute);
     volumeRange.addEventListener('input', () => setVolume(volumeRange.value));
     player.addEventListener('loadeddata', applyAudioVolume);
+    
     function dismissMusicGate() {
       startMusic();
       applyAudioVolume();
@@ -517,7 +519,7 @@
       screen(`
         <div class="card">
           <h1>Chào nàng<br>đáng iêuuu</h1>
-          <p class="copy">Trước khi mở lời mời bí mật này, cho anh xin một dấu hiệu nhận biết nàng nhaaa.</p>
+          <p class="copy">Trước khi mở lời mời bí mật này, nàng hãy cho anh tín hiệu để biết đây là nàng nhaaa.</p>
           <form class="form-row" id="name-form">
             <input class="text-input" id="name-input" autocomplete="name" placeholder="Nhập tên của nàng..." aria-label="Nhập tên" />
             <button class="pill" type="submit">mở thư ✦</button>
@@ -531,9 +533,9 @@
         event.preventDefault();
         if (validName(input.value)) go('apology');
         else showModal({
-          title: 'Mật mã chưa đúng òiii',
-          text: 'Hình như nàng thử lại với tên thân thương của nàng xem sao nhaaa.',
-          button: 'dạaa',
+          title: 'Tín chủ chưa phải người mà toi muốn gặppp.',
+          text: 'Vui lòng thử lại sauuuu.',
+          button: 'okeee thoii',
           onConfirm: () => { closeModal(); input.focus(); }
         });
       });
@@ -544,7 +546,7 @@
         <div class="card typing-card">
           <h2 class="typing-text typing-cursor" id="typing-text"></h2>
           <div class="button-area hidden" id="typed-action">
-            <button class="action-button" id="typed-back" type="button">Quay về</button>
+            <button class="action-button" id="typed-back" type="button">Quay lại nè</button>
             <button class="action-button" id="typed-button" type="button">Tiếp tục nha</button>
           </div>
         </div>`);
@@ -683,7 +685,7 @@
             document.getElementById('quiz-options').classList.remove('hidden');
           });
         } else {
-          revealJapanese('nànggg lạnh lùng quá đấy, nhưng không sao, anh thíchhhh, và anh bật mí luôn nha, đó chính là mình sẽ đi ăn đồ Nhậttttt nhaaaa');
+          revealJapanese('nànggg lạnh lùng quá đấy, nhưng không sao, anh thíchhhh, và anh bật mí luôn nha, đó chính là mình sẽ đi ăn đồ Nhậttttt tại Shinsui 5/551 Kim Mã, Ngọc Hà vào 18h nhaaaa');
         }
       });
     }
@@ -696,7 +698,7 @@
       input.focus();
       document.getElementById('quiz-form').addEventListener('submit', event => {
         event.preventDefault();
-        if (validJapanese(input.value)) go('lake');
+        if (validJapanese(input.value)) go('then');
         else {
           state.quizMistakes += 1;
           if (state.quizMistakes >= 3) revealJapanese('tiếc quá, vầy anh sẽ bật mí luôn nha, đó chính là mình sẽ đi ăn đồ Nhậttttt tại Shinsui 5/551 Kim Mã, Ngọc Hà vào 18h nhaaaa');
@@ -741,12 +743,22 @@
 
     function renderFinish() {
       const dateList = [1, 2, 3].map(priority => `<li>${priorities[priority]}: ${dateText(state.dates[priority])}</li>`).join('');
+      const dressInput = document.getElementById('dress-input');
       screen(`
         <div class="card finish">
           <img src="./hey.png" alt="Finish Image">
           <h2>Hẹn nàng<br>một ngày thiệt vui nhaaa</h2>
           <p class="copy">Anh sẽ chờ để cùng nàng viết tiếp hành trình này.</p>
           <ul class="plan-lines">${dateList}</ul>
+          <p style="margin: 25px 0 0; padding: 0; list-style: none; color: var(--text); font-size: .9rem; line-height: 2; text-align: left;">Và về phần mặc đồ, nàng đã chọn: ${dressInput ? dressInput.value : 'Chưa chọn'}</p>
+          <ul class="plan-lines">
+            <li>9h30: Photobooth tại Dương Khuê</li>
+            <li>10h45: Ăn trưa tại Vô Vi chayy</li>
+            <li>12h15: Làm tranh tại Vụng tô tí</li>
+            <li>18h00: Ăn tối tại Shinsui</li>
+            <li>19h30: Đi dạo Hồ Tây</li>
+            <li>20h30: Về nhà 29 ngõ 565 Lạc Long Quân, Tây Hồ</li>
+          </ul>
           <p class="soft" style="margin-top:26px">Nhớ mang theo nụ cười của nàng thôi, còn lại để anh looo.</p>
         </div>`);
     }
@@ -762,6 +774,7 @@
         case 'lunch': renderTyped({ text: messages.lunch, next: 'paint', previous: 'booth' }); break;
         case 'paint': renderTyped({ text: messages.paint, next: 'japanese', previous: 'lunch' }); break;
         case 'japanese': renderQuiz(); break;
+        case 'then': renderTyped({ text: messages.then, next: 'lake', previous: 'japanese' }); break;
         case 'lake': renderTyped({ text: messages.lake, next: 'home', previous: 'japanese' }); break;
         case 'home': renderTyped({ text: messages.home, next: 'dress', previous: 'lake' }); break;
         case 'dress': renderDress(); break;

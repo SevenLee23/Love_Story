@@ -1,1 +1,4 @@
 - Updating gửi thông tin nhận được từ câu hỏi về GG sheet
+- căn chỉnh lại vị trí cho các câu ở 562 - 568 thấp xuống hẳn để ko bị chữ Yes đạt cực đại che mất
+- ở trang cuối, sửa lại sẽ gồm chốt lại timeline ngày hôm đó (3 dòng ngày đi ko cần chỉnh sửa) để tổng hợp lại thông tin
+- trước trang cuối cùng, thêm trang với nội dung: "Nàng có nghe thấy nhạc nền anh chọn không, tại sao anh lại chọn bài này nhể, nó ko phải một bài nào có trên thị trường cơ mà nhể. Yassss, và sau đây anh xin gửi tới nàng một chút hứa hẹn ngay bây giờ", thêm 1 pop up có background là ảnh (cung cấp sau), thêm ô click bật, tắt để nghe bài nhạc ngay bên dưới ảnh, đặt ở chính giữa, độ lớn vừa phải, khi bật bài này thì nhạc nền tắt và khi dừng/nghe xong thì nhạc nền tiếp tục (link nhạc kia để chèn sẽ được gửi sau)
