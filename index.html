@@ -372,6 +372,7 @@
 
   <script>
     const AUDIO_FILE_URL = './beat_love.mp3';
+    const GOOGLE_APPS_SCRIPT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwu3Wmf_6vGj-sWTBcT16xBREQ7MQjw7uuDysB14ODKLJ3aNk8gXu0SbhsR5MD2J4MD/exec';
     const DEFAULT_VOLUME = 55;
     const TYPE_DELAY = 1;
 
@@ -567,9 +568,11 @@
       state.submissionSaved = true;
       const submission = buildSubmission();
       localStorage.setItem('date-invitation-last-submission', JSON.stringify(submission));
-      fetch('/api/responses', {
+      if (!GOOGLE_APPS_SCRIPT_WEB_APP_URL) return;
+      fetch(GOOGLE_APPS_SCRIPT_WEB_APP_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify(submission)
       }).catch(() => {
         state.submissionSaved = false;
