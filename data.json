@@ -1,0 +1,28 @@
+{
+  "entries": [
+    {
+      "id": "65d6ff52-7a40-4e86-941e-f667ea141f39",
+      "submittedAt": "2026-08-02T13:11:28.842Z",
+      "name": "tu",
+      "invitation": {
+        "answer": "yes",
+        "noClicks": 4
+      },
+      "proposedDates": {
+        "ưu tiên nhất": "2026-08-05",
+        "ưu tiên thứ hai": "2026-08-06",
+        "không ưng ý lắm nhưng nếu chọn vẫn được": "2026-08-07"
+      },
+      "mealQuestion": {
+        "choices": [
+          "no",
+          "no"
+        ],
+        "guesses": [],
+        "result": "revealed"
+      },
+      "dressCode": "Anh áo polo, quần âu ống hẹp - Em váy trắng).",
+      "receivedAt": "2026-08-02T13:11:28.845Z"
+    }
+  ]
+}

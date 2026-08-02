@@ -214,11 +214,32 @@
 
     .button-area { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; margin-top: 30px; }
 
-    .ask-card { text-align: center; overflow: visible; }
+    .ask-card { position: relative; text-align: center; overflow: visible; }
+    .choice-stage { min-height: 66px; align-items: center; }
     .yes-wrap { position: relative; z-index: 2; }
-    #yes-button { min-width: 118px; font-size: 1.16rem; transform-origin: center; }
-    #no-button { position: relative; z-index: 1; min-width: 105px; }
-    .pleas { min-height: 48px; margin: 17px auto 0; max-width: 250px; color: var(--rose-deep); font-size: 9px; line-height: 1.45; }
+    #yes-button { min-width: 118px; font-size: 1.16rem; }
+    #no-button { position: relative; z-index: 2; min-width: 105px; margin: 0; }
+    #no-button.is-disabled {
+      position: fixed;
+      z-index: 20;
+      opacity: .68;
+      cursor: not-allowed;
+      transition: left .7s ease, top .7s ease;
+    }
+    .pleas {
+      position: relative;
+      z-index: 30;
+      min-height: 48px;
+      width: fit-content;
+      margin: 17px auto 0;
+      max-width: min(430px, 88vw);
+      padding: 7px 11px;
+      border-radius: 12px;
+      background: rgba(251, 244, 235, .86);
+      color: var(--rose-deep);
+      font-size: 9px;
+      line-height: 1.45;
+    }
     .pleas:empty { display: none; }
 
     .calendar-card { width: min(840px, 100%); padding: clamp(22px, 4vw, 42px); }
@@ -370,6 +391,13 @@
       calendarMonth: 7,
       calendarPriority: 1,
       dates: { 1: null, 2: null, 3: null },
+      visitorName: '',
+      invitationAnswer: '',
+      mealChoices: [],
+      mealGuesses: [],
+      mealResult: '',
+      dressCode: '',
+      submissionSaved: false,
       isMuted: false,
       timers: []
     };
@@ -515,6 +543,39 @@
       render();
     }
 
+    function buildSubmission() {
+      return {
+        id: window.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+        submittedAt: new Date().toISOString(),
+        name: state.visitorName,
+        invitation: {
+          answer: state.invitationAnswer,
+          noClicks: state.noCount
+        },
+        proposedDates: Object.fromEntries(Object.entries(state.dates).map(([priority, date]) => [priorities[priority], date])),
+        mealQuestion: {
+          choices: state.mealChoices,
+          guesses: state.mealGuesses,
+          result: state.mealResult
+        },
+        dressCode: state.dressCode
+      };
+    }
+
+    function persistSubmission() {
+      if (state.submissionSaved) return;
+      state.submissionSaved = true;
+      const submission = buildSubmission();
+      localStorage.setItem('date-invitation-last-submission', JSON.stringify(submission));
+      fetch('/api/responses', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(submission)
+      }).catch(() => {
+        state.submissionSaved = false;
+      });
+    }
+
     function renderWelcome() {
       screen(`
         <div class="card">
@@ -531,7 +592,10 @@
       later(() => input.focus(), 180);
       form.addEventListener('submit', event => {
         event.preventDefault();
-        if (validName(input.value)) go('apology');
+        if (validName(input.value)) {
+          state.visitorName = input.value.trim();
+          go('apology');
+        }
         else showModal({
           title: 'Tín chủ chưa phải người mà toi muốn gặppp.',
           text: 'Vui lòng thử lại sauuuu.',
@@ -559,6 +623,20 @@
       });
     }
 
+    function moveDisabledNoButton() {
+      const noButton = document.getElementById('no-button');
+      if (!noButton) return;
+      const move = () => {
+        const padding = 20;
+        const maxLeft = Math.max(padding, window.innerWidth - noButton.offsetWidth - padding);
+        const maxTop = Math.max(padding, window.innerHeight - noButton.offsetHeight - padding);
+        noButton.style.left = `${padding + Math.random() * (maxLeft - padding)}px`;
+        noButton.style.top = `${padding + Math.random() * (maxTop - padding)}px`;
+        later(move, 800);
+      };
+      move();
+    }
+
     function renderChoice() {
       const pleas = [
         'Nàng cho anh một cơ hội nhỏ xíu thôi cũng được màaa.',
@@ -568,21 +646,33 @@
         'Một cái date nho nhỏ, một niềm vui thiệt to nhaaa.',
         'Nàng ơi, yes đi mà... anh chờ nè.'
       ];
-      const yesScale = Math.min(1 + state.noCount * .45, 8.6);
+      const finalChoice = state.noCount >= 5;
+      const yesScale = Math.min(1 + state.noCount * .45, 2.8);
+      const yesWidth = Math.round(118 * yesScale);
+      const yesHeight = Math.round(48 * yesScale);
+      const yesFontSize = (1.16 * yesScale).toFixed(2);
       screen(`
         <div class="card ask-card">
           <h2>Vậy em có muốn<br>đi chơi cùng anh?</h2>
-          <div class="button-area">
-            <div class="yes-wrap"><button class="choice-button" id="yes-button" type="button" style="transform:scale(${yesScale})">yes</button></div>
-            <button class="choice-button" id="no-button" type="button">no</button>
+          <div class="button-area choice-stage">
+            <div class="yes-wrap"><button class="choice-button" id="yes-button" type="button" style="width:${yesWidth}px;height:${yesHeight}px;font-size:${yesFontSize}rem">yes</button></div>
+            ${finalChoice ? '<button class="choice-button is-disabled" id="no-button" type="button" disabled aria-disabled="true">no</button>' : '<button class="choice-button" id="no-button" type="button">no</button>'}
           </div>
           <p class="pleas">${state.noCount ? escapeHtml(pleas[Math.min(state.noCount - 1, pleas.length - 1)]) : ''}</p>
         </div>`);
-      document.getElementById('yes-button').addEventListener('click', () => go('calendar'));
-      document.getElementById('no-button').addEventListener('click', () => {
-        state.noCount += 1;
-        renderChoice();
+      document.getElementById('yes-button').addEventListener('click', () => {
+        state.invitationAnswer = 'yes';
+        go('calendar');
       });
+      if (!finalChoice) {
+        document.getElementById('no-button').addEventListener('click', () => {
+          state.noCount += 1;
+          state.invitationAnswer = 'no';
+          renderChoice();
+        });
+      } else {
+        moveDisabledNoButton();
+      }
     }
 
     const monthNames = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'];
@@ -673,9 +763,13 @@
     }
 
     function bindQuizOptions() {
-      document.getElementById('quiz-yes').addEventListener('click', showQuizInput);
+      document.getElementById('quiz-yes').addEventListener('click', () => {
+        state.mealChoices.push('yes');
+        showQuizInput();
+      });
       document.getElementById('quiz-no').addEventListener('click', () => {
         state.quizNoCount += 1;
+        state.mealChoices.push('no');
         const detail = document.getElementById('quiz-detail');
         document.getElementById('quiz-options').classList.add('hidden');
         if (state.quizNoCount === 1) {
@@ -698,7 +792,12 @@
       input.focus();
       document.getElementById('quiz-form').addEventListener('submit', event => {
         event.preventDefault();
-        if (validJapanese(input.value)) go('then');
+        const guess = input.value.trim();
+        state.mealGuesses.push(guess);
+        if (validJapanese(guess)) {
+          state.mealResult = 'correct';
+          go('then');
+        }
         else {
           state.quizMistakes += 1;
           if (state.quizMistakes >= 3) revealJapanese('tiếc quá, vầy anh sẽ bật mí luôn nha, đó chính là mình sẽ đi ăn đồ Nhậttttt tại Shinsui 5/551 Kim Mã, Ngọc Hà vào 18h nhaaaa');
@@ -712,6 +811,7 @@
     }
 
     function revealJapanese(text) {
+      state.mealResult = 'revealed';
       document.getElementById('quiz-detail').innerHTML = `<p class="quiz-message">${escapeHtml(text)}</p><button class="pill" id="japanese-reveal" type="button">dạaaaa</button>`;
       document.getElementById('japanese-reveal').addEventListener('click', () => go('lake'));
     }
@@ -731,7 +831,11 @@
       const input = document.getElementById('dress-input');
       form.addEventListener('submit', event => {
         event.preventDefault();
-        if (/^\S(?:.*\S)?\s-\s\S(?:.*\S)?$/.test(input.value.trim())) go('finish');
+        if (/^\S(?:.*\S)?\s-\s\S(?:.*\S)?$/.test(input.value.trim())) {
+          state.dressCode = input.value.trim();
+          persistSubmission();
+          go('finish');
+        }
         else showModal({
           title: 'ựaaaa',
           text: 'phiền nàng nhập lại một chút nhaaa',
@@ -743,14 +847,13 @@
 
     function renderFinish() {
       const dateList = [1, 2, 3].map(priority => `<li>${priorities[priority]}: ${dateText(state.dates[priority])}</li>`).join('');
-      const dressInput = document.getElementById('dress-input');
       screen(`
         <div class="card finish">
           <img src="./hey.png" alt="Finish Image">
           <h2>Hẹn nàng<br>một ngày thiệt vui nhaaa</h2>
           <p class="copy">Anh sẽ chờ để cùng nàng viết tiếp hành trình này.</p>
           <ul class="plan-lines">${dateList}</ul>
-          <p style="margin: 25px 0 0; padding: 0; list-style: none; color: var(--text); font-size: .9rem; line-height: 2; text-align: left;">Và về phần mặc đồ, nàng đã chọn: ${dressInput ? dressInput.value : 'Chưa chọn'}</p>
+          <p style="margin: 25px 0 0; padding: 0; list-style: none; color: var(--text); font-size: .9rem; line-height: 2; text-align: left;">Và về phần mặc đồ, nàng đã chọn: ${escapeHtml(state.dressCode || 'Chưa chọn')}</p>
           <ul class="plan-lines">
             <li>9h30: Photobooth tại Dương Khuê</li>
             <li>10h45: Ăn trưa tại Vô Vi chayy</li>
