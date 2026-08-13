@@ -280,6 +280,26 @@
 
     .finish { text-align: center; }
     .finish .big-heart { display: block; margin: 24px 0 15px; color: var(--rose-mid); font-size: clamp(5rem, 20vw, 9rem); line-height: .75; }
+    .finish a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 27px;
+      padding: 14px 21px;
+      border: 1px solid var(--rose-mid);
+      border-radius: 999px;
+      background: var(--rose-light);
+      color: var(--rose-deep);
+      box-shadow: 0 8px 20px var(--shadow);
+      text-decoration: none;
+      transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+    }
+    .finish a:hover, .finish a:focus-visible {
+      transform: translateY(-3px);
+      background: var(--rose-soft);
+      box-shadow: 0 11px 25px var(--shadow);
+    }
+    .finish a:focus-visible { outline: 2px solid var(--rose-deep); outline-offset: 3px; }
     .plan-lines { margin: 25px 0 0; padding: 0; list-style: none; color: var(--text); font-size: .9rem; line-height: 2; text-align: left; }
 
     .modal-backdrop {
@@ -372,7 +392,6 @@
 
   <script>
     const AUDIO_FILE_URL = './beat_love.mp3';
-    const GOOGLE_APPS_SCRIPT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbz_boZBJa76lhwgzHrzinfY3Hrpb5YMFne7Yo-gEIt5KaAhXshAEdSocCQyfYia3jw/exec';
     const DEFAULT_VOLUME = 55;
     const TYPE_DELAY = 1;
 
@@ -398,7 +417,6 @@
       mealGuesses: [],
       mealResult: '',
       dressCode: '',
-      submissionSaved: false,
       isMuted: false,
       timers: []
     };
@@ -406,13 +424,11 @@
     const messages = {
       apology: 'Anh xin lỗi vì thời gian vừa qua đã để em chịu nhiều ấm ức, thiệt thòi, mà anh lại không tinh tế để nhìn ra điều đó. Anh sẽ sửa sai ngay bây giờ đây nàng nhóo.',
       safe: 'Thông báo tới nàng, lịch trình hôm tới đây khá là dày nhaaa, yêu cầu iêu thắt dây an toàn, ăn uống và ngủ nghỉ đầy đủ để có sức khỏe thiệt là tốt nhaaa. Timeline chúng ta bắt đầu từ 9h sáng (đã khấu trừ, bổ sung tới 9h30 đi là vừaaaa)',
-      booth: 'Mở đầu buổi date ngày hôm nay cũm sẽ như bao lần khác, đó chính là hai ta cùng chụp photoboothhhhhh tại Dương Khuê vào lúc 9h30 (±30ph) hê hê',
-      lunch: 'Kế tới, chúng ta sẽ có một bữa trưa thật sớm sủa, hơn hẳn mọi lần luon. Đó chính là tại Vô Vi chayy tại 11 Yên Lãng, Đống Đa) vào lúc 10h45 nhaaa. Dạo đây anh nhận ra ở đôi ta thường xảy ra xích mích vứi nhauuu. Anh và em chắc phải thanh tẩy hồng trần thoiii',
-      paint: 'Xong òiiii, giờ nhá là mình sẽ đi tới một nơi mình cũng muốn đi với nhau từ lâu lắm rồi. Hê hê hê, chính là đi làm tranh ở Vụng tô tí tại 56 Nguyễn Phúc Lai, Đống Đa vào lúc 12h15 nhaaaa',
-      japanese: 'Ròiii, em đi được tới đây thì mình anh thông báo tới em là chúng ta sẽ cùng thưởng thức bữa tối mà lần trước em đã đề xuất với anh. Em đoán ra là gì khônggg????',
-      then: 'Chính xác òiiii, nàng giỏi quáaaa. Và chúng ta sẽ đi ăn tối tại 5/551 Kim Mã Ngọc Hà nhaaaaa. Không gian sang trọng này, bắt mắt này, check-in cứ phải gọi nét căng. Đặc biệt là quán được feedback rất "sạch" nha, 5 sao lận đóoo',
-      lake: 'Và sau khi ăn tối xong, anh nghĩ chúng mình cần có thời gian để xuôi cơm đúng khom nào. Và anh muốn ta tìm về chốn cũ kia, dù có đi rất nhiều lần nhưng mà anh vẫn muốn cùng em đi tới dù cho có thêm nhiều lần đi chăng nữa. Chắc em cũng đoán đó là nơi nào rồi phải không. Đúm òi, đó chính là Hồ Tây, nhưng lần này ta cùng nhau tới nơi mà chính xác là lần đầu ta cùng tới đó nhaaaaa',
-      home: 'Và như nhìu lần trước anh cũm từng nói với em thì đây sẽ là điểm dừng chân của chúng ta. Đó chính là hây tôm tại nhà 29 ngõ 565 Lạc Long Quân, Tây Hồ hehe. Nhưng mà nãy chúng ta đi ăn mất òi nên anh khong thể cùng nấu ăn với em đượccc (nói z chớ chắc chắn bụng anh đói đó nên chúng ta pha mì nhaaa).'
+      booth: 'Mở đầu buổi date ngày hôm nay cũm sẽ như bao lần khác, đó chính là hai ta cùng chụp photoboothhhhhh tại Dương Khuê vào lúc 9h30 hê hê',
+      lunch: 'Kế tới, chúng ta sẽ có một bữa trưa thật sớm sủa, hơn hẳn mọi lần luon. Đó chính là tại Vô Vi chayy tại 11 Yên Lãng, Đống Đa) vào lúc 11h nhaaa. Dạo đây anh nhận ra ở đôi ta thường xảy ra xích mích vứi nhauuu. Anh và em chắc phải thanh tẩy hồng trần thoiii',
+      paint: 'Xong òiiii... Bây giờ là 12h30 và mình bắt đầu di chuyển thoai. Giờ nhá là mình sẽ đi tới một nơi mình cũng muốn đi với nhau từ lâu lắm rồi. Hê hê hê, chính là đi làm tranh ở Vụng tô tí tại 56 Nguyễn Phúc Lai, Đống Đa vào lúc 13h nhaaaa',
+      lake: 'Lúc này khả lăng là 19h nàng ạ, chúng mình di chuyển cả chiều rui phải khom nào. Và anh nghĩ cũng tới lúc ta tạm dừng chân ở Parami 86 tại 19 Nhật Chiêu Tây Hồ, Hà Nội vào lúc 19h30 nhaaa. Tại đây chúng mình sẽ cùng thưởng thức đồ uống và tâm sự cũng như nói chuyện về thời gian vừa qua để chúng ta được giãi bày hết nèee.',
+      home: 'Và như nhìu lần trước anh cũm từng nói với em thì đây sẽ là điểm dừng chân của chúng ta. Đó chính là hây tôm tại nhà 29 ngõ 565 Lạc Long Quân, Tây Hồ hehe. Ta cùng nhau nấu ăng tại đây nhaaaaa. Trước khi chúng ta dừng chân hẳn thì cùng anh tạt qua siêu thị nào đó mua đồ ròi cùm nấu nha iêuuuuu.'
     };
 
     function escapeHtml(value) {
@@ -460,10 +476,6 @@
     function validName(value) {
       const words = normalize(value).split(/[^a-z]+/).filter(Boolean);
       return words.length > 0 && words.every(word => ['nguyen', 'anh', 'tu'].includes(word));
-    }
-
-    function validJapanese(value) {
-      return /nhat+/.test(normalize(value));
     }
 
     function showModal({ title, text, button = 'dạaa', onConfirm, input = false, placeholder = '' }) {
@@ -544,41 +556,25 @@
       render();
     }
 
-    function buildSubmission() {
-      return {
-        id: window.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`,
-        submittedAt: new Date().toISOString(),
-        name: state.visitorName,
-        invitation: {
-          answer: state.invitationAnswer,
-          noClicks: state.noCount
-        },
-        proposedDates: Object.fromEntries(Object.entries(state.dates).map(([priority, date]) => [priorities[priority], date])),
-        mealQuestion: {
-          choices: state.mealChoices,
-          guesses: state.mealGuesses,
-          result: state.mealResult
-        },
-        dressCode: state.dressCode
-      };
-    }
+    function buildMailtoLink() {
+      const dateLines = [1, 2, 3]
+        .map(priority => `- ${priorities[priority]}: ${dateText(state.dates[priority])}`)
+        .join('\n');
+      const body = [
+        `${state.visitorName || 'N\u00e0ng'} ch\u00e0o anh,`,
+        '',
+        'Sau \u0111\u00e2y l\u00e0 c\u00e2u tr\u1ea3 l\u1eddi c\u1ee7a em v\u1ec1 l\u1eddi m\u1eddi nha:',
+        '',
+        'Em \u0111\u1ec1 xu\u1ea5t ch\u1ecdn nh\u1eefng ng\u00e0y sau:',
+        '',
+        dateLines,
+        '',
+        `V\u1ec1 ph\u1ea7n trang ph\u1ee5c em mu\u1ed1n ch\u1ecdn: ${state.dressCode || ''}`
+      ].join('\n');
+      const subject = 'Em g\u1eedi anh c\u00e2u tr\u1ea3 l\u1eddi nha';
 
-    function persistSubmission() {
-      if (state.submissionSaved) return;
-      state.submissionSaved = true;
-      const submission = buildSubmission();
-      localStorage.setItem('date-invitation-last-submission', JSON.stringify(submission));
-      if (!GOOGLE_APPS_SCRIPT_WEB_APP_URL) return;
-      fetch(GOOGLE_APPS_SCRIPT_WEB_APP_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify(submission)
-      }).catch(() => {
-        state.submissionSaved = false;
-      });
+      return `mailto:huynhnm118@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     }
-
     function renderWelcome() {
       screen(`
         <div class="card">
@@ -740,85 +736,6 @@
       }
     }
 
-    function renderQuiz() {
-      screen(`
-        <div class="card quiz-card">
-          <h2 class="typing-text typing-cursor" id="typing-text"></h2>
-          <div class="button-area hidden" id="quiz-action">
-            <button class="action-button" id="quiz-continue" type="button">Tiếp tục nha</button>
-          </div>
-          <div class="button-area hidden" id="quiz-options">
-            <button class="choice-button" id="quiz-yes" type="button">có</button>
-            <button class="choice-button" id="quiz-no" type="button">khôngg</button>
-          </div>
-          <div id="quiz-detail"></div>
-        </div>`);
-      const target = document.getElementById('typing-text');
-      typeText(target, messages.japanese, () => {
-        target.classList.remove('typing-cursor');
-        document.getElementById('quiz-action').classList.remove('hidden');
-        document.getElementById('quiz-continue').addEventListener('click', () => {
-          document.getElementById('quiz-action').classList.add('hidden');
-          document.getElementById('quiz-options').classList.remove('hidden');
-          bindQuizOptions();
-        });
-      });
-    }
-
-    function bindQuizOptions() {
-      document.getElementById('quiz-yes').addEventListener('click', () => {
-        state.mealChoices.push('yes');
-        showQuizInput();
-      });
-      document.getElementById('quiz-no').addEventListener('click', () => {
-        state.quizNoCount += 1;
-        state.mealChoices.push('no');
-        const detail = document.getElementById('quiz-detail');
-        document.getElementById('quiz-options').classList.add('hidden');
-        if (state.quizNoCount === 1) {
-          detail.innerHTML = '<p class="quiz-message">ựaaaaa, hay là nàngg thử đoán đi cho nóa kịch tính</p><button class="pill" id="quiz-try-again" type="button">dạaa</button>';
-          document.getElementById('quiz-try-again').addEventListener('click', () => {
-            detail.innerHTML = '';
-            document.getElementById('quiz-options').classList.remove('hidden');
-          });
-        } else {
-          revealJapanese('nànggg lạnh lùng quá đấy, nhưng không sao, anh thíchhhh, và anh bật mí luôn nha, đó chính là mình sẽ đi ăn đồ Nhậttttt tại Shinsui 5/551 Kim Mã, Ngọc Hà vào 18h nhaaaa');
-        }
-      });
-    }
-
-    function showQuizInput() {
-      document.getElementById('quiz-options').classList.add('hidden');
-      const detail = document.getElementById('quiz-detail');
-      detail.innerHTML = '<form id="quiz-form" class="form-row"><input id="quiz-input" class="text-input quiz-answer" placeholder="Nàng đoán xem là gì nèee..." /><button class="pill" type="submit">đoán nè ✦</button></form><div id="quiz-feedback"></div>';
-      const input = document.getElementById('quiz-input');
-      input.focus();
-      document.getElementById('quiz-form').addEventListener('submit', event => {
-        event.preventDefault();
-        const guess = input.value.trim();
-        state.mealGuesses.push(guess);
-        if (validJapanese(guess)) {
-          state.mealResult = 'correct';
-          go('then');
-        }
-        else {
-          state.quizMistakes += 1;
-          if (state.quizMistakes >= 3) revealJapanese('tiếc quá, vầy anh sẽ bật mí luôn nha, đó chính là mình sẽ đi ăn đồ Nhậttttt tại Shinsui 5/551 Kim Mã, Ngọc Hà vào 18h nhaaaa');
-          else {
-            document.getElementById('quiz-feedback').innerHTML = `<p class="quiz-message">${state.quizMistakes === 1 ? 'chưa đúng rồiii, nàng thử đoán thêm một lần nhaaa' : 'nàngg cố thêm một lần nữa thuii, đoán trúng là có thưởng liền nèee'}</p>`;
-            input.value = '';
-            input.focus();
-          }
-        }
-      });
-    }
-
-    function revealJapanese(text) {
-      state.mealResult = 'revealed';
-      document.getElementById('quiz-detail').innerHTML = `<p class="quiz-message">${escapeHtml(text)}</p><button class="pill" id="japanese-reveal" type="button">dạaaaa</button>`;
-      document.getElementById('japanese-reveal').addEventListener('click', () => go('lake'));
-    }
-
     function renderDress() {
       screen(`
         <div class="card dress-card">
@@ -836,7 +753,6 @@
         event.preventDefault();
         if (/^\S(?:.*\S)?\s-\s\S(?:.*\S)?$/.test(input.value.trim())) {
           state.dressCode = input.value.trim();
-          persistSubmission();
           go('finish');
         }
         else showModal({
@@ -850,6 +766,7 @@
 
     function renderFinish() {
       const dateList = [1, 2, 3].map(priority => `<li>${priorities[priority]}: ${dateText(state.dates[priority])}</li>`).join('');
+      const mailtoLink = escapeHtml(buildMailtoLink());
       screen(`
         <div class="card finish">
           <img src="./hey.png" alt="Finish Image">
@@ -859,12 +776,12 @@
           <p style="margin: 25px 0 0; padding: 0; list-style: none; color: var(--text); font-size: .9rem; line-height: 2; text-align: left;">Và về phần mặc đồ, nàng đã chọn: ${escapeHtml(state.dressCode || 'Chưa chọn')}</p>
           <ul class="plan-lines">
             <li>9h30: Photobooth tại Dương Khuê</li>
-            <li>10h45: Ăn trưa tại Vô Vi chayy</li>
-            <li>12h15: Làm tranh tại Vụng tô tí</li>
-            <li>18h00: Ăn tối tại Shinsui</li>
-            <li>19h30: Đi dạo Hồ Tây</li>
-            <li>20h30: Về nhà 29 ngõ 565 Lạc Long Quân, Tây Hồ</li>
+            <li>11h00: \u0102n tr\u01b0a t\u1ea1i V\u00f4 Vi chay, 11 Y\u00ean L\u00e3ng, \u0110\u1ed1ng \u0110a</li>
+            <li>13h00: L\u00e0m tranh t\u1ea1i V\u1ee5ng t\u00f4 t\u00ed, 56 Nguy\u1ec5n Ph\u00fac Lai, \u0110\u1ed1ng \u0110a</li>
+            <li>19h30: D\u1eebng ch\u00e2n t\u1ea1i Parami 86, 19 Nh\u1eadt Chi\u00eau, T\u00e2y H\u1ed3</li>
+            <li>Sau \u0111\u00f3: V\u1ec1 nh\u00e0 29 ng\u00f5 565 L\u1ea1c Long Qu\u00e2n, T\u00e2y H\u1ed3</li>
           </ul>
+          <a href="${mailtoLink}">G\u1eedi anh email</a>
           <p class="soft" style="margin-top:26px">Nhớ mang theo nụ cười của nàng thôi, còn lại để anh looo.</p>
         </div>`);
     }
@@ -878,10 +795,8 @@
         case 'safe': renderTyped({ text: messages.safe, next: 'booth', previous: 'calendar' }); break;
         case 'booth': renderTyped({ text: messages.booth, next: 'lunch', previous: 'safe' }); break;
         case 'lunch': renderTyped({ text: messages.lunch, next: 'paint', previous: 'booth' }); break;
-        case 'paint': renderTyped({ text: messages.paint, next: 'japanese', previous: 'lunch' }); break;
-        case 'japanese': renderQuiz(); break;
-        case 'then': renderTyped({ text: messages.then, next: 'lake', previous: 'japanese' }); break;
-        case 'lake': renderTyped({ text: messages.lake, next: 'home', previous: 'japanese' }); break;
+        case 'paint': renderTyped({ text: messages.paint, next: 'lake', previous: 'lunch' }); break;
+        case 'lake': renderTyped({ text: messages.lake, next: 'home', previous: 'paint' }); break;
         case 'home': renderTyped({ text: messages.home, next: 'dress', previous: 'lake' }); break;
         case 'dress': renderDress(); break;
         case 'finish': renderFinish(); break;
